@@ -12,7 +12,7 @@ const QuoteForm = () => {
   };
 
   return (
-    <section className="py-8 bg-background border-b-2 border-border">
+    <section className="py-8 bg-background bg-dotted">
       <div className="container mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -20,8 +20,10 @@ const QuoteForm = () => {
           viewport={{ once: true }}
           className="text-2xl md:text-4xl font-display text-center mb-6"
         >
-          🔥 Get Your{" "}
-          <span className="text-accent">Free</span> Quote Today! 🔥
+          <span className="star-deco mr-2">↓</span>
+          Get Your{" "}
+          <span className="text-accent">Free</span> Quote Today!
+          <span className="star-deco ml-2">↓</span>
         </motion.h2>
 
         <motion.form
@@ -29,7 +31,6 @@ const QuoteForm = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
           className="flex flex-col md:flex-row gap-3 items-center justify-center max-w-5xl mx-auto"
         >
           {[
@@ -61,6 +62,9 @@ const QuoteForm = () => {
           </motion.button>
         </motion.form>
 
+        {/* Golden divider */}
+        <div className="max-w-5xl mx-auto mt-4 h-1 rounded-full" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--funky-gold)), transparent)" }} />
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -74,11 +78,11 @@ const QuoteForm = () => {
             className={`inline-flex items-center gap-2 px-5 py-2 rounded-full font-body text-sm border-2 transition-all ${
               isRecording
                 ? "bg-accent text-accent-foreground border-accent"
-                : "bg-card text-foreground border-border hover:border-accent"
+                : "bg-card text-foreground border-funky-gold hover:border-accent"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            animate={isRecording ? { boxShadow: ["0 0 0 0 hsl(4 85% 55% / 0.4)", "0 0 0 15px hsl(4 85% 55% / 0)", "0 0 0 0 hsl(4 85% 55% / 0.4)"] } : {}}
+            animate={isRecording ? { boxShadow: ["0 0 0 0 hsl(4 85% 55% / 0.4)", "0 0 0 15px hsl(4 85% 55% / 0)"] } : {}}
             transition={isRecording ? { duration: 1.5, repeat: Infinity } : {}}
           >
             <Mic className="w-4 h-4" /> {isRecording ? "Recording..." : "Record Audio"}

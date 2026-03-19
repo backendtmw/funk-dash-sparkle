@@ -12,24 +12,24 @@ const QuoteForm = () => {
   };
 
   return (
-    <section className="relative pt-14 pb-12 bg-funky-wave">
+    <section className="py-8 bg-background border-b-2 border-border">
       <div className="container mx-auto px-4">
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-5xl font-display text-center mb-8"
+          className="text-2xl md:text-4xl font-display text-center mb-6"
         >
-          🎉 Get Your{" "}
-          <span className="text-accent">Free</span> Quote Today! 🎉
+          🔥 Get Your{" "}
+          <span className="text-accent">Free</span> Quote Today! 🔥
         </motion.h2>
 
         <motion.form
           onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.1 }}
           className="flex flex-col md:flex-row gap-3 items-center justify-center max-w-5xl mx-auto"
         >
           {[
@@ -43,7 +43,7 @@ const QuoteForm = () => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 * i }}
+              transition={{ delay: 0.05 * i }}
               type="text"
               placeholder={field.placeholder}
               className="input-funky w-full md:w-auto flex-1"
@@ -65,13 +65,13 @@ const QuoteForm = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-6"
+          transition={{ delay: 0.3 }}
+          className="text-center mt-4"
         >
-          <p className="text-muted-foreground mb-2 font-body">🎙️ Or tell us about your move via audio</p>
+          <p className="text-muted-foreground mb-2 font-body text-sm">🎙️ Or tell us about your move via audio</p>
           <motion.button
             onClick={() => setIsRecording(!isRecording)}
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-display text-sm border-2 transition-all ${
+            className={`inline-flex items-center gap-2 px-5 py-2 rounded-full font-body text-sm border-2 transition-all ${
               isRecording
                 ? "bg-accent text-accent-foreground border-accent"
                 : "bg-card text-foreground border-border hover:border-accent"

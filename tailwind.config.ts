@@ -13,7 +13,18 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["Bangers", "cursive"],
+        body: ["Fredoka", "sans-serif"],
+      },
       colors: {
+        "funky-orange": "hsl(var(--funky-orange))",
+        "funky-yellow": "hsl(var(--funky-yellow))",
+        "funky-green": "hsl(var(--funky-green))",
+        "funky-pink": "hsl(var(--funky-pink))",
+        "funky-blue": "hsl(var(--funky-blue))",
+        "funky-light-blue": "hsl(var(--funky-light-blue))",
+        "funky-cyan": "hsl(var(--funky-cyan))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -4,6 +4,7 @@ import QuoteForm from "@/components/QuoteForm";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import HowItWorks from "@/components/HowItWorks";
 import OurServices from "@/components/OurServices";
+import InsuranceProtection from "@/components/InsuranceProtection";
 import Guarantee from "@/components/Guarantee";
 import Footer from "@/components/Footer";
 
@@ -15,6 +16,7 @@ const Index = () => (
     <WhyChooseUs />
     <HowItWorks />
     <OurServices />
+    <InsuranceProtection />
     <Guarantee />
     <Footer />
   </div>

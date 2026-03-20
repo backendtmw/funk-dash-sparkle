@@ -15,27 +15,28 @@ const HowItWorks = () => {
   const [callbackForm, setCallbackForm] = useState({ name: "", phone: "", time: "Morning" });
 
   return (
-    <section className="section-blue py-16 relative overflow-hidden">
+    <section className="section-blue py-16 md:py-20 relative overflow-hidden">
       {/* Floating sparkles */}
       {["✦", "★", "✧", "⭐"].map((s, i) => (
         <motion.span
           key={i}
-          className="absolute text-funky-yellow text-xl opacity-30 pointer-events-none"
+          className="absolute text-funky-yellow text-xl opacity-20 pointer-events-none"
           style={{ top: `${15 + i * 20}%`, left: `${8 + i * 22}%` }}
-          animate={{ y: [0, -25, 0], rotate: [0, 180, 360], opacity: [0.2, 0.5, 0.2] }}
+          animate={{ y: [0, -20, 0], opacity: [0.15, 0.35, 0.15] }}
           transition={{ duration: 3 + i, repeat: Infinity, delay: i * 0.4 }}
         >
           {s}
         </motion.span>
       ))}
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
         {/* Ribbon heading */}
         <motion.div
-          initial={{ opacity: 0, y: 30, rotate: -5 }}
-          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-          viewport={{ once: true }}
-          className="text-center md:text-left mb-10"
+          initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-12"
         >
           <div className="ribbon-heading inline-block">
             <h2 className="text-3xl md:text-4xl font-display text-foreground">
@@ -45,48 +46,52 @@ const HowItWorks = () => {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-10 items-start">
-          {/* Steps with cartoon images */}
+          {/* Steps */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               {steps.map((step, i) => (
                 <motion.div
                   key={step.num}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.2, type: "spring" }}
+                  initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ delay: i * 0.12, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   className="relative text-center"
                 >
-                  {/* Step number badge */}
+                  {/* Step number */}
                   <motion.div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center font-display text-lg z-20"
+                    className="absolute -top-4 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center font-display text-lg z-20 shadow-lg"
                     style={{ background: "linear-gradient(135deg, hsl(var(--accent)), hsl(var(--funky-orange)))", color: "white" }}
-                    animate={{ scale: [1, 1.15, 1] }}
+                    animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                   >
                     {step.num}
                   </motion.div>
 
-                  {/* Image container */}
+                  {/* Image card */}
                   <motion.div
-                    className="rounded-2xl overflow-hidden mb-3 pt-4"
-                    style={{ background: "hsl(0 0% 100% / 0.1)", backdropFilter: "blur(4px)", border: "2px solid hsl(var(--funky-gold) / 0.3)" }}
-                    whileHover={{ scale: 1.05, rotate: -2 }}
+                    className="rounded-2xl overflow-hidden mb-4 pt-5 px-3 pb-3"
+                    style={{
+                      background: "hsl(0 0% 100% / 0.08)",
+                      border: "2px solid hsl(var(--funky-gold) / 0.3)",
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <img src={step.img} alt={step.title} className="w-full h-36 object-contain" />
+                    <img src={step.img} alt={step.title} className="w-full h-32 object-contain" />
                   </motion.div>
 
-                  <h3 className="font-display text-primary-foreground text-xl">{step.title}</h3>
+                  <h3 className="font-display text-primary-foreground text-xl mb-1">{step.title}</h3>
                   <p className="text-primary-foreground/60 font-body text-sm italic">{step.desc}</p>
 
-                  {/* Arrow between steps */}
+                  {/* Arrow */}
                   {i < steps.length - 1 && (
                     <motion.div
-                      className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10"
-                      animate={{ x: [0, 8, 0] }}
+                      className="hidden sm:block absolute -right-5 top-1/2 -translate-y-1/2 z-10"
+                      animate={{ x: [0, 6, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
                     >
-                      <ChevronRight className="w-8 h-8 text-funky-yellow" />
+                      <ChevronRight className="w-7 h-7 text-funky-yellow" />
                     </motion.div>
                   )}
                 </motion.div>
@@ -96,21 +101,19 @@ const HowItWorks = () => {
 
           {/* Callback Form */}
           <motion.div
-            initial={{ opacity: 0, x: 50, rotate: 2 }}
-            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", bounce: 0.3 }}
-            className="w-full max-w-sm"
+            initial={{ opacity: 0, x: 40, filter: "blur(6px)" }}
+            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full lg:max-w-sm flex-shrink-0"
           >
-            <div className="rounded-2xl overflow-hidden" style={{ border: "3px solid hsl(var(--funky-gold))" }}>
-              {/* Header */}
-              <div className="bg-funky-gradient px-6 py-4 text-center">
+            <div className="rounded-2xl overflow-hidden shadow-xl" style={{ border: "3px solid hsl(var(--funky-gold))" }}>
+              <div className="bg-funky-gradient px-6 py-5 text-center">
                 <h3 className="font-display text-2xl text-primary-foreground">Request a Callback</h3>
-                <p className="text-primary-foreground/80 text-sm font-body">Let Us Contact You!</p>
+                <p className="text-primary-foreground/80 text-sm font-body mt-1">Let Us Contact You!</p>
               </div>
 
-              {/* Form body */}
-              <div className="bg-card p-5 space-y-3">
+              <div className="bg-card p-6 space-y-3.5">
                 <input
                   type="text"
                   placeholder="Your Name"
@@ -137,7 +140,7 @@ const HowItWorks = () => {
 
                 <motion.button
                   className="btn-gold w-full flex items-center justify-center gap-2"
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                 >
                   Request Callback <ArrowRight className="w-4 h-4" />

@@ -3,11 +3,8 @@ import {
   ArrowRight,
   ArrowLeft,
   Mic,
-  MicOff,
   ShieldCheck,
   Clock,
-  Star,
-  Phone,
   CheckCircle,
   MapPin,
   Home,
@@ -15,13 +12,14 @@ import {
   User,
   FileCheck,
   Square,
+  Phone,
 } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 
 const trustPoints = [
-  { icon: ShieldCheck, text: "Insured up to £50k" },
+  { icon: ShieldCheck, text: "Insured moves" },
   { icon: Clock, text: "Quote in 60 seconds" },
-  { icon: Star, text: "4.9★ rated service" },
+  { icon: CheckCircle, text: "£25+ discount" },
 ];
 
 const STEPS = [
@@ -44,6 +42,7 @@ type FormData = {
   flexibleDates: string;
   fullName: string;
   email: string;
+  phone: string;
   consent: boolean;
 };
 
@@ -59,6 +58,7 @@ const initialFormData: FormData = {
   flexibleDates: "",
   fullName: "",
   email: "",
+  phone: "",
   consent: false,
 };
 
@@ -90,7 +90,7 @@ const QuoteForm = () => {
       case 2:
         return !!(formData.moveDate && formData.flexibleDates);
       case 3:
-        return !!(formData.fullName && formData.email);
+        return !!(formData.fullName && formData.email && formData.phone);
       case 4:
         return formData.consent;
       default:
@@ -100,7 +100,7 @@ const QuoteForm = () => {
 
   const handleSubmit = () => {
     if (mode === "audio") {
-      console.log("Audio quote submitted", { audioBlob, formData: { fullName: formData.fullName, email: formData.email, consent: formData.consent } });
+      console.log("Audio quote submitted", { audioBlob, formData: { fullName: formData.fullName, email: formData.email, phone: formData.phone, consent: formData.consent } });
     } else {
       console.log("Form quote submitted:", formData);
     }
@@ -164,7 +164,6 @@ const QuoteForm = () => {
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
-  // Render helpers
   const OptionButton = ({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) => (
     <motion.button
       type="button"
@@ -199,7 +198,7 @@ const QuoteForm = () => {
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Property Type</label>
               <div className="flex flex-wrap gap-2">
-                {["Flat", "House", "Office"].map((t) => (
+                {["Flat", "House"].map((t) => (
                   <OptionButton key={t} selected={formData.propertyType === t} onClick={() => updateField("propertyType", t)}>
                     {t}
                   </OptionButton>
@@ -285,6 +284,10 @@ const QuoteForm = () => {
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Email Address</label>
               <input type="email" className="input-funky w-full" placeholder="your@email.com" value={formData.email} onChange={(e) => updateField("email", e.target.value)} />
             </div>
+            <div>
+              <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Phone Number</label>
+              <input type="tel" className="input-funky w-full" placeholder="07xxx xxx xxx" value={formData.phone} onChange={(e) => updateField("phone", e.target.value)} />
+            </div>
           </div>
         );
       case 4:
@@ -298,12 +301,12 @@ const QuoteForm = () => {
                 {formData.consent && <CheckCircle className="w-3.5 h-3.5 text-accent-foreground" />}
               </div>
               <p className="text-sm font-body text-foreground leading-relaxed">
-                I agree to receive my moving quotes and understand my details will be used to generate discounted quotes via our partner{" "}
+                I agree to receive my moving quotes and understand my details will be used to generate discounted quotes via a partner{" "}
                 <span className="font-semibold text-funky-orange">(AnyVan)</span>.
               </p>
             </div>
             <div className="bg-funky-green/10 border border-funky-green/30 rounded-xl p-3 text-center">
-              <p className="text-xs font-body text-funky-green font-semibold">🎉 AnyVan partners give you exclusive discounted rates on your move!</p>
+              <p className="text-xs font-body text-funky-green font-semibold">🎉 At least £25 discount applied to your moving quote!</p>
             </div>
           </div>
         );
@@ -318,7 +321,7 @@ const QuoteForm = () => {
         <ul className="text-sm font-body text-muted-foreground space-y-1 list-disc list-inside">
           <li>Your moving postcode</li>
           <li>Where you're moving to</li>
-          <li>Property type</li>
+          <li>Property type (flat or house)</li>
           <li>Number of bedrooms</li>
           <li>Floor level and lift (if any)</li>
           <li>Your moving date</li>
@@ -333,17 +336,10 @@ const QuoteForm = () => {
       {/* Recording UI */}
       <div className="flex flex-col items-center gap-4">
         {isRecording && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center"
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
             <div className="text-3xl font-display text-accent tabular-nums">{formatTime(recordingTime)}</div>
             <div className="w-48 h-2 bg-muted rounded-full mt-2 overflow-hidden">
-              <motion.div
-                className="h-full bg-accent rounded-full"
-                style={{ width: `${(recordingTime / MAX_RECORDING_TIME) * 100}%` }}
-              />
+              <motion.div className="h-full bg-accent rounded-full" style={{ width: `${(recordingTime / MAX_RECORDING_TIME) * 100}%` }} />
             </div>
             <p className="text-xs font-body text-muted-foreground mt-1">Max {MAX_RECORDING_TIME}s</p>
           </motion.div>
@@ -367,45 +363,47 @@ const QuoteForm = () => {
         {audioUrl && !isRecording && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
             <audio controls src={audioUrl} className="w-full rounded-lg" />
-            <p className="text-xs font-body text-funky-green text-center mt-1.5 font-semibold">✅ Recording saved! Now fill in your contact details below.</p>
+            <p className="text-xs font-body text-funky-green text-center mt-1.5 font-semibold">✅ Recording saved!</p>
           </motion.div>
         )}
       </div>
 
-      {/* Contact fields for audio mode */}
-      {audioUrl && !isRecording && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 border-t border-border/30 pt-4">
-          <div>
-            <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Full Name</label>
-            <input className="input-funky w-full" placeholder="Your full name" value={formData.fullName} onChange={(e) => updateField("fullName", e.target.value)} />
+      {/* Mandatory contact fields + submit for audio mode */}
+      <div className="space-y-3 border-t border-border/30 pt-4">
+        <div>
+          <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Full Name <span className="text-accent">*</span></label>
+          <input className="input-funky w-full" placeholder="Your full name" value={formData.fullName} onChange={(e) => updateField("fullName", e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Email Address <span className="text-accent">*</span></label>
+          <input type="email" className="input-funky w-full" placeholder="your@email.com" value={formData.email} onChange={(e) => updateField("email", e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Phone Number <span className="text-accent">*</span></label>
+          <input type="tel" className="input-funky w-full" placeholder="07xxx xxx xxx" value={formData.phone} onChange={(e) => updateField("phone", e.target.value)} />
+        </div>
+        <div
+          className="flex items-start gap-3 p-4 rounded-xl border-2 border-border/50 bg-card cursor-pointer hover:border-funky-gold/50 transition-colors"
+          onClick={() => updateField("consent", !formData.consent)}
+        >
+          <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${formData.consent ? "bg-funky-green border-funky-green" : "border-muted-foreground/40"}`}>
+            {formData.consent && <CheckCircle className="w-3.5 h-3.5 text-accent-foreground" />}
           </div>
-          <div>
-            <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Email Address</label>
-            <input type="email" className="input-funky w-full" placeholder="your@email.com" value={formData.email} onChange={(e) => updateField("email", e.target.value)} />
-          </div>
-          <div
-            className="flex items-start gap-3 p-4 rounded-xl border-2 border-border/50 bg-card cursor-pointer hover:border-funky-gold/50 transition-colors"
-            onClick={() => updateField("consent", !formData.consent)}
-          >
-            <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${formData.consent ? "bg-funky-green border-funky-green" : "border-muted-foreground/40"}`}>
-              {formData.consent && <CheckCircle className="w-3.5 h-3.5 text-accent-foreground" />}
-            </div>
-            <p className="text-sm font-body text-foreground leading-relaxed">
-              I agree to receive my moving quotes via our partner <span className="font-semibold text-funky-orange">(AnyVan)</span>.
-            </p>
-          </div>
-          <motion.button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!formData.fullName || !formData.email || !formData.consent}
-            className="btn-funky w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Get My Discounted Moving Quotes! <ArrowRight className="w-5 h-5" />
-          </motion.button>
-        </motion.div>
-      )}
+          <p className="text-sm font-body text-foreground leading-relaxed">
+            I agree to receive my moving quotes via a partner <span className="font-semibold text-funky-orange">(AnyVan)</span>.
+          </p>
+        </div>
+        <motion.button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!formData.fullName || !formData.email || !formData.phone || !formData.consent}
+          className="btn-funky w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          Get My Discounted Moving Quotes! <ArrowRight className="w-5 h-5" />
+        </motion.button>
+      </div>
     </div>
   );
 
@@ -518,9 +516,6 @@ const QuoteForm = () => {
                       <span className={`text-[9px] sm:text-[10px] font-body mt-1 text-center leading-tight ${isActive ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
                         {s.label}
                       </span>
-                      {i < STEPS.length - 1 && (
-                        <div className="hidden" />
-                      )}
                     </div>
                   );
                 })}
@@ -594,19 +589,6 @@ const QuoteForm = () => {
             renderAudioMode()
           )}
         </motion.div>
-
-        {/* Phone CTA */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-5">
-          <p className="text-muted-foreground font-body text-sm">Prefer to talk?</p>
-          <motion.a
-            href="tel:08001234567"
-            className="inline-flex items-center gap-2 btn-gold !text-sm !px-5 !py-2"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-          >
-            <Phone className="w-4 h-4" /> Call 0800 123 4567
-          </motion.a>
-        </div>
       </div>
     </section>
   );

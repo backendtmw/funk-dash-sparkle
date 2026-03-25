@@ -1,76 +1,77 @@
 import { motion } from "framer-motion";
-import { Truck, ShieldCheck, DollarSign, Star } from "lucide-react";
-import featureReliable from "@/assets/feature-reliable.png";
+import { CheckCircle } from "lucide-react";
 
-const features = [
-  { icon: Truck, title: "Fast & Reliable", desc: "Nationwide coverage with on-time delivery", color: "var(--funky-blue)" },
-  { icon: ShieldCheck, title: "Fully Insured", desc: "Complete protection for your belongings", color: "var(--funky-green)" },
-  { icon: DollarSign, title: "Affordable Rates", desc: "Transparent pricing, no hidden fees", color: "var(--funky-orange)" },
-  { icon: Star, title: "5-Star Reviews", desc: "Trusted by 10,000+ customers", color: "var(--funky-yellow)", stars: true },
+const reasons = [
+  "Connecting you directly to a trusted UK moving platform",
+  "Helping you access exclusive home move discounts",
+  "Showing a full month of availability options",
+  "Removing the need to contact multiple companies",
+  "Making the process faster, easier, and clearer",
 ];
 
 const WhyChooseUs = () => (
   <section className="py-14 md:py-20 bg-background bg-dotted relative overflow-hidden">
-    <div className="container mx-auto px-4 max-w-5xl">
-      {/* Section heading */}
+    <div className="container mx-auto px-4 max-w-3xl">
       <motion.div
         initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="text-center mb-12"
+        className="text-center mb-8"
       >
         <div className="ribbon-heading inline-block">
           <h2 className="text-3xl md:text-4xl font-display text-foreground">
-            Why Choose <span className="text-accent">Us?</span>
+            Why Use <span className="text-accent">ihatemoving.co.uk?</span>
           </h2>
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {features.map((f, i) => (
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className="text-center text-muted-foreground font-body text-base md:text-lg mb-8 leading-relaxed"
+      >
+        Moving house is stressful — comparing prices, finding availability, and dealing with timing issues.
+        We simplify everything by:
+      </motion.p>
+
+      <div className="space-y-3 mb-10">
+        {reasons.map((r, i) => (
           <motion.div
-            key={f.title}
-            initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ delay: 0.08 * i, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="card-poster p-6 text-center cursor-default"
+            key={i}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-start gap-3 card-poster p-4"
           >
-            <motion.div
-              className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-              style={{ background: `hsl(${f.color} / 0.12)` }}
-              whileHover={{ rotate: 15 }}
-              transition={{ type: "spring", stiffness: 200 }}
-            >
-              {i === 0 ? (
-                <img src={featureReliable} alt="Reliable" className="w-14 h-14 object-contain" />
-              ) : (
-                <f.icon className="w-8 h-8" style={{ color: `hsl(${f.color})` }} />
-              )}
-            </motion.div>
-            <h3 className="font-display text-xl mb-1.5">{f.title}</h3>
-            <p className="text-muted-foreground font-body text-sm leading-relaxed">{f.desc}</p>
-            {f.stars && (
-              <div className="flex justify-center mt-3 gap-1">
-                {[...Array(5)].map((_, j) => (
-                  <motion.span
-                    key={j}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + j * 0.08 }}
-                    className="star-deco text-lg"
-                  >
-                    ★
-                  </motion.span>
-                ))}
-              </div>
-            )}
+            <CheckCircle className="w-5 h-5 text-funky-green flex-shrink-0 mt-0.5" />
+            <span className="font-body text-sm md:text-base text-card-foreground">{r}</span>
           </motion.div>
         ))}
       </div>
+
+      {/* Takeaway CTA */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="card-poster p-6 md:p-8 text-center"
+      >
+        <h3 className="font-display text-xl md:text-2xl text-foreground mb-3">
+          Moving is a headache! — we make it simple
+        </h3>
+        <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed mb-2">
+          ☑️ We'll refer you to our trusted partner and can provide you with at least{" "}
+          <span className="font-semibold text-funky-green">£25 off</span> your moving quote.
+        </p>
+        <p className="font-body text-sm text-muted-foreground italic">
+          That's enough to cover a takeaway or two for your first night in your new home 😊
+        </p>
+      </motion.div>
     </div>
   </section>
 );

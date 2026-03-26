@@ -42,9 +42,9 @@ const InsuranceProtection = () => (
           transition={{ duration: 3.5, repeat: Infinity }}
         />
         <div className="text-primary-foreground text-center md:text-left">
-          <p className="font-body text-sm md:text-base leading-relaxed mb-3">
-            We know damage is a big concern when moving. That's why every eligible move includes{" "}
-            <span className="font-semibold text-funky-green">Goods in Transit</span> insurance.
+         <p className="font-body text-sm md:text-base leading-relaxed mb-3">
+            We protect your belongings in case of{" "}
+            <span className="font-semibold text-funky-green">fire or theft</span>. Every eligible move includes Goods in Transit insurance.
           </p>
           <div className="inline-flex items-center gap-2 bg-funky-yellow/15 border-2 border-funky-yellow/40 rounded-2xl px-5 py-2.5">
             <ShieldCheck className="w-5 h-5 text-funky-yellow" />

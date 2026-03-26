@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import heroBg from "@/assets/hero-bg.png";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ArrowRight } from "lucide-react";
 
 const benefits = [
-  "Real person helps set up your home move request",
-  "Full month of availability options",
-  "At least £25 extra discount applied",
-  "Insurance included on eligible bookings",
-  "Simple, fast, no obligation",
+  "Real human support (no bots)",
+  "Same-day quote setup",
+  "Full month of availability",
+  "£25+ discount applied",
+  "Fully insured (eligible moves)",
+  "No obligation, no hidden fees",
 ];
 
 const Sparkle = ({ delay, className }: { delay: number; className: string }) => (
@@ -22,7 +23,7 @@ const Sparkle = ({ delay, className }: { delay: number; className: string }) => 
 
 const HeroSection = () => (
   <section className="relative overflow-hidden">
-    <div className="relative w-full min-h-[420px] sm:min-h-[480px] md:min-h-[520px] lg:min-h-[560px]">
+    <div className="relative w-full min-h-[480px] sm:min-h-[520px] md:min-h-[560px] lg:min-h-[600px]">
       <img src={heroBg} alt="Moving day scene" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/75 to-primary/40" />
 
@@ -31,7 +32,7 @@ const HeroSection = () => (
       <Sparkle delay={1} className="top-8 right-[48%]" />
       <Sparkle delay={1.5} className="bottom-16 right-[12%]" />
 
-      <div className="relative flex items-center min-h-[420px] sm:min-h-[480px] md:min-h-[520px] lg:min-h-[560px]">
+      <div className="relative flex items-center min-h-[480px] sm:min-h-[520px] md:min-h-[560px] lg:min-h-[600px]">
         <div className="container mx-auto px-6 md:px-10 py-10">
           <motion.div
             initial={{ x: -60, opacity: 0, filter: "blur(8px)" }}
@@ -40,19 +41,18 @@ const HeroSection = () => (
             className="max-w-2xl"
           >
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display leading-[0.95] mb-4"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display leading-[0.95] mb-4"
               style={{
                 color: "hsl(var(--primary-foreground))",
                 textShadow: "3px 3px 0 hsl(var(--funky-dark-blue)), -1px -1px 0 hsl(var(--funky-dark-blue))",
               }}
             >
-              Get Your Home Move Sorted with a{" "}
+              Your Personal Move Coordinator —{" "}
               <span className="text-funky-yellow" style={{ textShadow: "3px 3px 0 hsl(var(--funky-orange)), 6px 6px 0 hsl(var(--funky-dark-blue))" }}>
-                Real Person
-              </span>
-              {" + "}
+                Plus an Exclusive
+              </span>{" "}
               <span className="text-funky-orange" style={{ textShadow: "3px 3px 0 hsl(var(--funky-dark-blue))" }}>
-                Exclusive Discount
+                Partner Discount
               </span>
             </motion.h1>
 
@@ -63,16 +63,15 @@ const HeroSection = () => (
               className="text-base sm:text-lg md:text-xl text-primary-foreground/90 font-body leading-relaxed mb-6"
               style={{ textShadow: "1px 1px 3px hsl(var(--funky-dark-blue))" }}
             >
-              We help you secure a home moving quote directly from AnyVan with at least{" "}
-              <span className="text-funky-yellow font-bold">£25 extra discount</span>. You'll also see a full month of
-              availability options, so you can choose the cheapest and most convenient moving date.
+              Get your home move arranged by a real person — with a{" "}
+              <span className="text-funky-yellow font-bold">£25+ exclusive discount</span>, full availability options, and zero stress.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="space-y-2"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-8"
             >
               {benefits.map((b, i) => (
                 <motion.div
@@ -89,6 +88,18 @@ const HeroSection = () => (
                 </motion.div>
               ))}
             </motion.div>
+
+            <motion.a
+              href="#quote-form"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="btn-funky inline-flex items-center gap-2 w-full sm:w-auto justify-center"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              👉 Get Your Discounted Quote <ArrowRight className="w-5 h-5" />
+            </motion.a>
           </motion.div>
         </div>
       </div>

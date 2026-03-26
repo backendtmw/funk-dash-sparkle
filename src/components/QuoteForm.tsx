@@ -13,12 +13,13 @@ import {
   FileCheck,
   Square,
   Phone,
+  PartyPopper,
 } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 
 const trustPoints = [
   { icon: ShieldCheck, text: "Insured moves" },
-  { icon: Clock, text: "Quote in 60 seconds" },
+  { icon: Clock, text: "Same-day setup" },
   { icon: CheckCircle, text: "£25+ discount" },
 ];
 
@@ -66,6 +67,7 @@ const QuoteForm = () => {
   const [mode, setMode] = useState<"form" | "audio">("form");
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [submitted, setSubmitted] = useState(false);
 
   // Audio state
   const [isRecording, setIsRecording] = useState(false);
@@ -104,6 +106,7 @@ const QuoteForm = () => {
     } else {
       console.log("Form quote submitted:", formData);
     }
+    setSubmitted(true);
   };
 
   // Audio recording
@@ -170,7 +173,7 @@ const QuoteForm = () => {
       onClick={onClick}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}
-      className={`px-4 py-2.5 rounded-xl font-body text-sm font-medium border-2 transition-all ${
+      className={`px-4 py-2.5 rounded-xl font-body text-sm font-medium border-2 transition-all w-full sm:w-auto ${
         selected
           ? "border-funky-orange bg-funky-orange/10 text-foreground shadow-md"
           : "border-border/50 bg-card text-muted-foreground hover:border-funky-gold/50"
@@ -179,6 +182,39 @@ const QuoteForm = () => {
       {children}
     </motion.button>
   );
+
+  // Success screen
+  if (submitted) {
+    return (
+      <section className="py-12 md:py-16 bg-background bg-dotted" id="quote-form">
+        <div className="container mx-auto px-4 max-w-xl">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="card-poster p-8 sm:p-10 text-center"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-funky-green/15 mb-6"
+            >
+              <PartyPopper className="w-10 h-10 text-funky-green" />
+            </motion.div>
+            <h2 className="font-display text-2xl sm:text-3xl text-foreground mb-4">
+              Thank You! 🎉
+            </h2>
+            <p className="font-body text-base text-muted-foreground leading-relaxed mb-2">
+              A real human will send you an email and ping you a text quoting you the best price by the end of today 😁
+            </p>
+            <p className="font-body text-sm text-funky-green font-semibold mt-4">
+              Check your inbox & phone — your discounted quote is on its way!
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
 
   const renderStep = () => {
     switch (step) {
@@ -197,8 +233,8 @@ const QuoteForm = () => {
             </div>
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Property Type</label>
-              <div className="flex flex-wrap gap-2">
-                {["Flat", "House"].map((t) => (
+              <div className="grid grid-cols-3 gap-2">
+                {["Flat", "House", "Office"].map((t) => (
                   <OptionButton key={t} selected={formData.propertyType === t} onClick={() => updateField("propertyType", t)}>
                     {t}
                   </OptionButton>
@@ -207,7 +243,7 @@ const QuoteForm = () => {
             </div>
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Floor Level</label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {["Ground", "1st", "2nd", "3rd+"].map((f) => (
                   <OptionButton key={f} selected={formData.floorLevel === f} onClick={() => updateField("floorLevel", f)}>
                     {f}
@@ -217,7 +253,7 @@ const QuoteForm = () => {
             </div>
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Lift Available?</label>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {["Yes", "No"].map((v) => (
                   <OptionButton key={v} selected={formData.liftAvailable === v} onClick={() => updateField("liftAvailable", v)}>
                     {v}
@@ -232,7 +268,7 @@ const QuoteForm = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Number of Bedrooms</label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {["1", "2", "3", "4+"].map((b) => (
                   <OptionButton key={b} selected={formData.bedrooms === b} onClick={() => updateField("bedrooms", b)}>
                     {b} Bed{b !== "1" ? "s" : ""}
@@ -244,7 +280,7 @@ const QuoteForm = () => {
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">
                 Estimated Move Size <span className="text-muted-foreground font-normal">(optional)</span>
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {["Small", "Medium", "Large"].map((s) => (
                   <OptionButton key={s} selected={formData.moveSize === s} onClick={() => updateField("moveSize", s)}>
                     {s}
@@ -263,7 +299,7 @@ const QuoteForm = () => {
             </div>
             <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Flexible on Dates?</label>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {["Yes", "No"].map((v) => (
                   <OptionButton key={v} selected={formData.flexibleDates === v} onClick={() => updateField("flexibleDates", v)}>
                     {v}
@@ -300,13 +336,15 @@ const QuoteForm = () => {
               <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${formData.consent ? "bg-funky-green border-funky-green" : "border-muted-foreground/40"}`}>
                 {formData.consent && <CheckCircle className="w-3.5 h-3.5 text-accent-foreground" />}
               </div>
-              <p className="text-sm font-body text-foreground leading-relaxed">
-                I agree to receive my moving quotes and understand my details will be used to generate discounted quotes via a partner{" "}
-                <span className="font-semibold text-funky-orange">(AnyVan)</span>.
-              </p>
-            </div>
-            <div className="bg-funky-green/10 border border-funky-green/30 rounded-xl p-3 text-center">
-              <p className="text-xs font-body text-funky-green font-semibold">🎉 At least £25 discount applied to your moving quote!</p>
+              <div>
+                <p className="text-sm font-body text-foreground leading-relaxed">
+                  ☑️ You agree to be connected with our trusted partner and secure at least{" "}
+                  <span className="font-semibold text-funky-green">£25 off</span> your moving quote.
+                </p>
+                <p className="text-xs font-body text-muted-foreground mt-2 italic">
+                  That's enough to cover a takeaway or two for your first night in your new home 😊
+                </p>
+              </div>
             </div>
           </div>
         );
@@ -361,19 +399,15 @@ const QuoteForm = () => {
         <p className="text-sm font-body text-muted-foreground">{isRecording ? "Tap to stop recording" : "Tap to start recording"}</p>
 
         {audioUrl && !isRecording && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full">
             <audio controls src={audioUrl} className="w-full rounded-lg" />
             <p className="text-xs font-body text-funky-green text-center mt-1.5 font-semibold">✅ Recording saved!</p>
           </motion.div>
         )}
       </div>
 
-      {/* Mandatory contact fields + submit for audio mode */}
+      {/* Mandatory contact fields + consent + submit for audio mode */}
       <div className="space-y-3 border-t border-border/30 pt-4">
-        <div>
-          <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Full Name <span className="text-accent">*</span></label>
-          <input className="input-funky w-full" placeholder="Your full name" value={formData.fullName} onChange={(e) => updateField("fullName", e.target.value)} />
-        </div>
         <div>
           <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Email Address <span className="text-accent">*</span></label>
           <input type="email" className="input-funky w-full" placeholder="your@email.com" value={formData.email} onChange={(e) => updateField("email", e.target.value)} />
@@ -389,46 +423,39 @@ const QuoteForm = () => {
           <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${formData.consent ? "bg-funky-green border-funky-green" : "border-muted-foreground/40"}`}>
             {formData.consent && <CheckCircle className="w-3.5 h-3.5 text-accent-foreground" />}
           </div>
-          <p className="text-sm font-body text-foreground leading-relaxed">
-            I agree to receive my moving quotes via a partner <span className="font-semibold text-funky-orange">(AnyVan)</span>.
-          </p>
+          <div>
+            <p className="text-sm font-body text-foreground leading-relaxed">
+              ☑️ You agree to be connected with our trusted partner and secure at least{" "}
+              <span className="font-semibold text-funky-green">£25 off</span> your moving quote.
+            </p>
+            <p className="text-xs font-body text-muted-foreground mt-2 italic">
+              That's enough to cover a takeaway or two for your first night in your new home 😊
+            </p>
+          </div>
         </div>
         <motion.button
           type="button"
           onClick={handleSubmit}
-          disabled={!formData.fullName || !formData.email || !formData.phone || !formData.consent}
+          disabled={!formData.email || !formData.phone || !formData.consent}
           className="btn-funky w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
         >
-          Get My Discounted Moving Quotes! <ArrowRight className="w-5 h-5" />
+          👉 Get My Discounted Moving Quotes <ArrowRight className="w-5 h-5" />
         </motion.button>
       </div>
     </div>
   );
 
   return (
-    <section className="py-10 md:py-14 bg-background bg-dotted" id="quote-form">
+    <section className="py-12 md:py-16 bg-background bg-dotted" id="quote-form">
       <div className="container mx-auto px-4 max-w-xl">
-        {/* Urgency banner */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="text-center mb-3"
-        >
-          <span className="inline-flex items-center gap-2 bg-funky-green/15 text-funky-green font-body text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 rounded-full border border-funky-green/30">
-            <CheckCircle className="w-4 h-4 shrink-0" />
-            Over 10,000 moves completed — Join them today!
-          </span>
-        </motion.div>
-
         <motion.h2
           initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-2xl sm:text-3xl md:text-4xl font-display text-center mb-2"
+          className="text-2xl sm:text-3xl md:text-4xl font-display text-center mb-3"
         >
           <span className="star-deco mr-1">✦</span>
           Get Your <span className="text-accent">Discounted</span> Quote
@@ -439,11 +466,10 @@ const QuoteForm = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="text-center text-muted-foreground font-body text-xs sm:text-sm mb-4"
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="text-center text-muted-foreground font-body text-sm sm:text-base mb-2"
         >
-          No obligation • No hidden fees • Powered by{" "}
-          <span className="font-semibold text-funky-orange">AnyVan</span> for exclusive discounts
+          Fill out the form or record your details — we'll handle the rest.
         </motion.p>
 
         {/* Trust badges */}
@@ -452,7 +478,7 @@ const QuoteForm = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-5"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6"
         >
           {trustPoints.map((tp, i) => (
             <div key={i} className="flex items-center gap-1.5 text-[11px] sm:text-xs font-body text-muted-foreground bg-card border border-border/50 rounded-full px-2.5 sm:px-3 py-1.5">
@@ -463,7 +489,7 @@ const QuoteForm = () => {
         </motion.div>
 
         {/* Mode toggle */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-5">
           <div className="inline-flex bg-muted rounded-full p-1 gap-1">
             <button
               onClick={() => setMode("form")}
@@ -471,7 +497,7 @@ const QuoteForm = () => {
                 mode === "form" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
               }`}
             >
-              📝 Fill Form
+              📝 Type your details
             </button>
             <button
               onClick={() => setMode("audio")}
@@ -479,7 +505,7 @@ const QuoteForm = () => {
                 mode === "audio" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
               }`}
             >
-              🎤 Record Audio
+              🎤 Send audio
             </button>
           </div>
         </div>
@@ -580,7 +606,7 @@ const QuoteForm = () => {
                     whileHover={canAdvance() ? { scale: 1.03 } : {}}
                     whileTap={canAdvance() ? { scale: 0.97 } : {}}
                   >
-                    Get My Discounted Moving Quotes! <ArrowRight className="w-4 h-4" />
+                    👉 Get My Discounted Moving Quotes <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 )}
               </div>

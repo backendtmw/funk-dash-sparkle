@@ -14,6 +14,11 @@ import {
   Square,
   Phone,
   PartyPopper,
+  Plus,
+  Minus,
+  ChevronDown,
+  ChevronUp,
+  Package,
 } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 
@@ -25,10 +30,113 @@ const trustPoints = [
 
 const STEPS = [
   { label: "Move Details", icon: MapPin },
-  { label: "Move Size", icon: Home },
+  { label: "Your Items", icon: Package },
   { label: "Move Date", icon: Calendar },
   { label: "Contact", icon: User },
   { label: "Consent", icon: FileCheck },
+];
+
+// Room-based inventory
+const INVENTORY_ROOMS = [
+  {
+    name: "Bedrooms",
+    emoji: "🛏️",
+    items: [
+      "Single Bed & Mattress",
+      "Double Bed & Mattress",
+      "Kingsize Bed & Mattress",
+      "Single Wardrobe",
+      "Double Wardrobe",
+      "Chest Of Drawers",
+      "Bedside Table",
+      "Dressing Table",
+      "Television",
+    ],
+  },
+  {
+    name: "Living",
+    emoji: "🛋️",
+    items: [
+      "Two Seater Sofa",
+      "Three Seater Sofa",
+      "Armchair",
+      "Coffee Table",
+      "Side Table",
+      "Small Television/TV (Less than 30\")",
+      "Large Television/TV (Greater than 40\")",
+      "TV Stand",
+      "Bookcase",
+      "Rug",
+      "Desk",
+      "Office Chair",
+      "Artwork",
+      "Floor Lamp",
+    ],
+  },
+  {
+    name: "Dining",
+    emoji: "🍽️",
+    items: [
+      "4 Seater Dining Table",
+      "6 Seater Dining Table",
+      "Dining Chair",
+      "Sideboard",
+      "Display Cabinet",
+      "Rug",
+    ],
+  },
+  {
+    name: "Kitchen",
+    emoji: "🍳",
+    items: [
+      "Fridge Freezer",
+      "Washing Machine",
+      "Microwave Oven",
+      "Cooker",
+      "Dishwasher",
+      "Kitchen Table",
+      "Dining Chair",
+      "Bin",
+      "Ironing Board",
+      "Tumble Dryer",
+    ],
+  },
+  {
+    name: "Bathroom",
+    emoji: "🚿",
+    items: [
+      "Large Mirror",
+      "Small Mirror",
+      "Rug",
+      "Bathroom Cabinet",
+      "Bath Tub",
+    ],
+  },
+  {
+    name: "Garden",
+    emoji: "🌿",
+    items: [
+      "Garden Table",
+      "Garden Chair",
+      "Lawn Mower",
+      "Tool Box",
+      "Bench",
+      "Parasol",
+      "Bicycle",
+    ],
+  },
+  {
+    name: "Boxes & Packaging",
+    emoji: "📦",
+    items: [
+      "Large Box (50×50×50 cm)",
+      "Medium Box (45×45×35 cm)",
+      "Small Box (40×30×30 cm)",
+      "Wardrobe Box",
+      "Suitcase",
+      "Bag",
+    ],
+  },
 ];
 
 type FormData = {
@@ -38,14 +146,16 @@ type FormData = {
   floorLevel: string;
   liftAvailable: string;
   bedrooms: string;
-  moveSize: string;
   moveDate: string;
   flexibleDates: string;
   fullName: string;
   email: string;
   phone: string;
   consent: boolean;
+  otherItems: string;
 };
+
+type InventoryItems = Record<string, number>;
 
 const initialFormData: FormData = {
   fromPostcode: "",
@@ -54,19 +164,21 @@ const initialFormData: FormData = {
   floorLevel: "",
   liftAvailable: "",
   bedrooms: "",
-  moveSize: "",
   moveDate: "",
   flexibleDates: "",
   fullName: "",
   email: "",
   phone: "",
   consent: false,
+  otherItems: "",
 };
 
 const QuoteForm = () => {
   const [mode, setMode] = useState<"form" | "audio">("form");
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [inventory, setInventory] = useState<InventoryItems>({});
+  const [expandedRooms, setExpandedRooms] = useState<Record<string, boolean>>({ Bedrooms: true });
   const [submitted, setSubmitted] = useState(false);
 
   // Audio state
@@ -83,12 +195,36 @@ const QuoteForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const updateInventoryItem = (item: string, delta: number) => {
+    setInventory((prev) => {
+      const current = prev[item] || 0;
+      const next = Math.max(0, current + delta);
+      if (next === 0) {
+        const { [item]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [item]: next };
+    });
+  };
+
+  const toggleRoom = (roomName: string) => {
+    setExpandedRooms((prev) => ({ ...prev, [roomName]: !prev[roomName] }));
+  };
+
+  const getRoomItemCount = (roomName: string) => {
+    const room = INVENTORY_ROOMS.find((r) => r.name === roomName);
+    if (!room) return 0;
+    return room.items.reduce((sum, item) => sum + (inventory[`${roomName}::${item}`] || 0), 0);
+  };
+
+  const totalItemCount = Object.values(inventory).reduce((sum, v) => sum + v, 0);
+
   const canAdvance = (): boolean => {
     switch (step) {
       case 0:
-        return !!(formData.fromPostcode && formData.toPostcode && formData.propertyType && formData.floorLevel && formData.liftAvailable);
+        return !!(formData.fromPostcode && formData.toPostcode && formData.propertyType && formData.floorLevel && formData.liftAvailable && formData.bedrooms);
       case 1:
-        return !!formData.bedrooms;
+        return true; // inventory is optional
       case 2:
         return !!(formData.moveDate && formData.flexibleDates);
       case 3:
@@ -104,7 +240,7 @@ const QuoteForm = () => {
     if (mode === "audio") {
       console.log("Audio quote submitted", { audioBlob, formData: { fullName: formData.fullName, email: formData.email, phone: formData.phone, consent: formData.consent } });
     } else {
-      console.log("Form quote submitted:", formData);
+      console.log("Form quote submitted:", { ...formData, inventory });
     }
     setSubmitted(true);
   };
@@ -242,6 +378,16 @@ const QuoteForm = () => {
               </div>
             </div>
             <div>
+              <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Number of Bedrooms</label>
+              <div className="grid grid-cols-4 gap-2">
+                {["1", "2", "3", "4+"].map((b) => (
+                  <OptionButton key={b} selected={formData.bedrooms === b} onClick={() => updateField("bedrooms", b)}>
+                    {b} Bed{b !== "1" ? "s" : ""}
+                  </OptionButton>
+                ))}
+              </div>
+            </div>
+            <div>
               <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Floor Level</label>
               <div className="grid grid-cols-4 gap-2">
                 {["Ground", "1st", "2nd", "3rd+"].map((f) => (
@@ -265,28 +411,97 @@ const QuoteForm = () => {
         );
       case 1:
         return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Number of Bedrooms</label>
-              <div className="grid grid-cols-4 gap-2">
-                {["1", "2", "3", "4+"].map((b) => (
-                  <OptionButton key={b} selected={formData.bedrooms === b} onClick={() => updateField("bedrooms", b)}>
-                    {b} Bed{b !== "1" ? "s" : ""}
-                  </OptionButton>
-                ))}
+          <div className="space-y-3">
+            <p className="text-sm font-body text-muted-foreground mb-2">
+              Go through each room and add items you need moved. This helps us give you an accurate quote.
+            </p>
+
+            {totalItemCount > 0 && (
+              <div className="bg-funky-green/10 border border-funky-green/30 rounded-xl px-4 py-2 text-sm font-body text-foreground">
+                <span className="font-semibold text-funky-green">{totalItemCount}</span> item{totalItemCount !== 1 ? "s" : ""} added
               </div>
+            )}
+
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+              {INVENTORY_ROOMS.map((room) => {
+                const roomCount = getRoomItemCount(room.name);
+                const isOpen = expandedRooms[room.name];
+                return (
+                  <div key={room.name} className="border border-border/50 rounded-xl overflow-hidden bg-card">
+                    <button
+                      type="button"
+                      onClick={() => toggleRoom(room.name)}
+                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{room.emoji}</span>
+                        <span className="font-body font-semibold text-sm text-foreground">{room.name}</span>
+                        {roomCount > 0 && (
+                          <span className="bg-funky-orange/15 text-funky-orange text-xs font-bold px-2 py-0.5 rounded-full">
+                            {roomCount}
+                          </span>
+                        )}
+                      </div>
+                      {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 pb-3 space-y-1.5 border-t border-border/30 pt-2">
+                            {room.items.map((item) => {
+                              const key = `${room.name}::${item}`;
+                              const count = inventory[key] || 0;
+                              return (
+                                <div key={item} className="flex items-center justify-between py-1.5">
+                                  <span className="text-sm font-body text-foreground pr-2">{item}</span>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => updateInventoryItem(key, -1)}
+                                      disabled={count === 0}
+                                      className="w-7 h-7 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:bg-muted disabled:opacity-30 transition-colors"
+                                    >
+                                      <Minus className="w-3.5 h-3.5" />
+                                    </button>
+                                    <span className={`w-6 text-center text-sm font-body font-semibold ${count > 0 ? "text-funky-orange" : "text-muted-foreground"}`}>
+                                      {count}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => updateInventoryItem(key, 1)}
+                                      className="w-7 h-7 rounded-full border border-funky-orange/50 bg-funky-orange/10 flex items-center justify-center text-funky-orange hover:bg-funky-orange/20 transition-colors"
+                                    >
+                                      <Plus className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
             </div>
-            <div>
-              <label className="block text-sm font-body font-semibold text-foreground mb-1.5">
-                Estimated Move Size <span className="text-muted-foreground font-normal">(optional)</span>
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {["Small", "Medium", "Large"].map((s) => (
-                  <OptionButton key={s} selected={formData.moveSize === s} onClick={() => updateField("moveSize", s)}>
-                    {s}
-                  </OptionButton>
-                ))}
-              </div>
+
+            {/* Other items */}
+            <div className="pt-2">
+              <label className="block text-sm font-body font-semibold text-foreground mb-1.5">Any other items?</label>
+              <textarea
+                className="input-funky w-full min-h-[60px] resize-y"
+                placeholder="e.g. Piano, Exercise Bike, Fish Tank..."
+                value={formData.otherItems}
+                onChange={(e) => updateField("otherItems", e.target.value)}
+              />
             </div>
           </div>
         );
@@ -364,9 +579,18 @@ const QuoteForm = () => {
           <li>Floor level and lift (if any)</li>
           <li>Your moving date</li>
         </ul>
+        <div className="mt-3 bg-funky-orange/10 border border-funky-orange/30 rounded-lg p-3">
+          <p className="text-sm font-body font-semibold text-foreground mb-1">
+            📦 Please go through this list and let us know what needs moving:
+          </p>
+          <p className="text-xs font-body text-muted-foreground leading-relaxed">
+            Beds & mattresses, wardrobes, chest of drawers, sofas, armchairs, coffee tables, TVs, dining tables & chairs, 
+            fridge freezer, washing machine, cooker, dishwasher, mirrors, garden furniture, bicycles, boxes, suitcases — and anything else!
+          </p>
+        </div>
         <div className="mt-3 bg-card border border-border/50 rounded-lg p-3">
           <p className="text-xs font-body text-muted-foreground italic">
-            <span className="font-semibold not-italic">Example:</span> "I'm moving from BD1 to M14, 2 bed flat, 2nd floor, no lift, moving on April 10th"
+            <span className="font-semibold not-italic">Example:</span> "I'm moving from BD1 to M14, 2 bed flat, 2nd floor, no lift, moving April 10th. I have a double bed, single wardrobe, 3 seater sofa, fridge freezer, washing machine, 5 large boxes and 3 medium boxes."
           </p>
         </div>
       </div>

@@ -1,13 +1,29 @@
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CheckCircle } from "lucide-react";
 import stepQuote from "@/assets/step-quote.png";
 import stepPack from "@/assets/step-pack.png";
 import stepSettle from "@/assets/step-settle.png";
 
 const steps = [
-  { num: "1", title: "Get a Quote", desc: "Fill our simple form or record your details", img: stepQuote },
-  { num: "2", title: "We Set It Up", desc: "We connect you with AnyVan + apply your £25 discount", img: stepPack },
-  { num: "3", title: "You Move", desc: "Choose your date, relax & enjoy!", img: stepSettle },
+  {
+    num: "1",
+    title: "Get a Quote",
+    desc: "Fill out the form or send your details via audio.",
+    img: stepQuote,
+  },
+  {
+    num: "2",
+    title: "We Set It Up",
+    desc: "A real person processes your request and sends:",
+    bullets: ["Your quote", "Discounted booking link", "Full availability options"],
+    img: stepPack,
+  },
+  {
+    num: "3",
+    title: "You Move",
+    desc: "Choose your date and move with confidence.",
+    img: stepSettle,
+  },
 ];
 
 const HowItWorks = () => (
@@ -34,7 +50,7 @@ const HowItWorks = () => (
       >
         <div className="ribbon-heading inline-block">
           <h2 className="text-3xl md:text-4xl font-display text-foreground">
-            How It <span className="text-accent">Works?</span>
+            How It <span className="text-accent">Works</span>
           </h2>
         </div>
       </motion.div>
@@ -71,7 +87,18 @@ const HowItWorks = () => (
             </motion.div>
 
             <h3 className="font-display text-primary-foreground text-xl mb-1">{step.title}</h3>
-            <p className="text-primary-foreground/60 font-body text-sm italic">{step.desc}</p>
+            <p className="text-primary-foreground/60 font-body text-sm italic mb-2">{step.desc}</p>
+
+            {step.bullets && (
+              <div className="space-y-1 mt-2">
+                {step.bullets.map((b, bi) => (
+                  <div key={bi} className="flex items-center gap-1.5 justify-center">
+                    <CheckCircle className="w-3.5 h-3.5 text-funky-green flex-shrink-0" />
+                    <span className="text-primary-foreground/70 font-body text-xs">{b}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {i < steps.length - 1 && (
               <motion.div

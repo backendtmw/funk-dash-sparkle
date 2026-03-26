@@ -2,11 +2,10 @@ import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 
 const reasons = [
-  "Connecting you directly to a trusted UK moving platform",
-  "Helping you access exclusive home move discounts",
-  "Showing a full month of availability options",
-  "Removing the need to contact multiple companies",
-  "Making the process faster, easier, and clearer",
+  "We connect you with a trusted UK-wide moving partner",
+  "You get an exclusive £25+ discount",
+  "We send a full month of availability so you can choose the cheapest date",
+  "A real person handles everything for you",
 ];
 
 const WhyChooseUs = () => (
@@ -21,7 +20,7 @@ const WhyChooseUs = () => (
       >
         <div className="ribbon-heading inline-block">
           <h2 className="text-3xl md:text-4xl font-display text-foreground">
-            Why Use <span className="text-accent">ihatemoving.co.uk?</span>
+            Why Use <span className="text-accent">Us?</span>
           </h2>
         </div>
       </motion.div>
@@ -31,10 +30,10 @@ const WhyChooseUs = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="text-center text-muted-foreground font-body text-base md:text-lg mb-8 leading-relaxed"
+        className="text-center text-muted-foreground font-body text-base md:text-lg mb-8 leading-relaxed max-w-xl mx-auto"
       >
-        Moving house is stressful — comparing prices, finding availability, and dealing with timing issues.
-        We simplify everything by:
+        Moving house is stressful — comparing prices, checking availability, and managing timing.
+        We make it simple:
       </motion.p>
 
       <div className="space-y-3 mb-10">
@@ -52,26 +51,6 @@ const WhyChooseUs = () => (
           </motion.div>
         ))}
       </div>
-
-      {/* Takeaway CTA */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="card-poster p-6 md:p-8 text-center"
-      >
-        <h3 className="font-display text-xl md:text-2xl text-foreground mb-3">
-          Moving is a headache! — we make it simple
-        </h3>
-        <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed mb-2">
-          ☑️ We'll refer you to our trusted partner and can provide you with at least{" "}
-          <span className="font-semibold text-funky-green">£25 off</span> your moving quote.
-        </p>
-        <p className="font-body text-sm text-muted-foreground italic">
-          That's enough to cover a takeaway or two for your first night in your new home 😊
-        </p>
-      </motion.div>
     </div>
   </section>
 );

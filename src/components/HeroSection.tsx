@@ -5,9 +5,9 @@ import { CheckCircle, ArrowRight } from "lucide-react";
 const benefits = [
   "Real human support (no bots)",
   "Same-day quote setup",
-  "Full month of availability",
+  "Full month of availability with prices shown",
   "£25+ discount applied",
-  "Fully insured (eligible moves)",
+  "Fully insured house move",
   "No obligation, no hidden fees",
 ];
 
@@ -47,7 +47,7 @@ const HeroSection = () => (
                 textShadow: "3px 3px 0 hsl(var(--funky-dark-blue)), -1px -1px 0 hsl(var(--funky-dark-blue))",
               }}
             >
-              Your Personal Move Coordinator —{" "}
+              Personalized Home Move Support —{" "}
               <span className="text-funky-yellow" style={{ textShadow: "3px 3px 0 hsl(var(--funky-orange)), 6px 6px 0 hsl(var(--funky-dark-blue))" }}>
                 Plus an Exclusive
               </span>{" "}

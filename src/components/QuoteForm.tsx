@@ -23,7 +23,7 @@ import {
 import { useState, useRef, useCallback, useEffect } from "react";
 
 const trustPoints = [
-  { icon: ShieldCheck, text: "Insured moves" },
+  { icon: ShieldCheck, text: "Insured house move specialists" },
   { icon: Clock, text: "Same-day setup" },
   { icon: CheckCircle, text: "£25+ discount" },
 ];

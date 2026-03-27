@@ -579,15 +579,22 @@ const QuoteForm = () => {
           <li>Floor level and lift (if any)</li>
           <li>Your moving date</li>
         </ul>
+
         <div className="mt-3 bg-funky-orange/10 border border-funky-orange/30 rounded-lg p-3">
-          <p className="text-sm font-body font-semibold text-foreground mb-1">
-            📦 Please go through this list and let us know what needs moving:
+          <p className="text-sm font-body font-semibold text-foreground mb-2">
+            📦 Please go through this list and let us know what needs adding. And include anything else.
           </p>
-          <p className="text-xs font-body text-muted-foreground leading-relaxed">
-            Beds & mattresses, wardrobes, chest of drawers, sofas, armchairs, coffee tables, TVs, dining tables & chairs, 
-            fridge freezer, washing machine, cooker, dishwasher, mirrors, garden furniture, bicycles, boxes, suitcases — and anything else!
-          </p>
+          <div className="space-y-2 text-xs font-body text-muted-foreground leading-relaxed">
+            <p><span className="font-semibold text-foreground">🛏️ Bedrooms:</span> Single/Double/Kingsize Bed & Mattress, Single/Double Wardrobe, Chest of Drawers, Bedside Table, Dressing Table, Television</p>
+            <p><span className="font-semibold text-foreground">🛋️ Living:</span> Two/Three Seater Sofa, Armchair, Coffee Table, Side Table, Small/Large TV, TV Stand, Bookcase, Rug, Desk, Office Chair, Artwork, Floor Lamp</p>
+            <p><span className="font-semibold text-foreground">🍽️ Dining:</span> 4/6 Seater Dining Table, Dining Chair, Sideboard, Display Cabinet, Rug</p>
+            <p><span className="font-semibold text-foreground">🍳 Kitchen:</span> Fridge Freezer, Washing Machine, Microwave, Cooker, Dishwasher, Kitchen Table, Bin, Ironing Board, Tumble Dryer</p>
+            <p><span className="font-semibold text-foreground">🚿 Bathroom:</span> Large/Small Mirror, Rug, Bathroom Cabinet, Bath Tub</p>
+            <p><span className="font-semibold text-foreground">🌿 Garden:</span> Garden Table & Chair, Lawn Mower, Tool Box, Bench, Parasol, Bicycle</p>
+            <p><span className="font-semibold text-foreground">📦 Boxes:</span> Large Box (50×50×50cm), Medium Box (45×45×35cm), Small Box (40×30×30cm), Wardrobe Box, Suitcase, Bag</p>
+          </div>
         </div>
+
         <div className="mt-3 bg-card border border-border/50 rounded-lg p-3">
           <p className="text-xs font-body text-muted-foreground italic">
             <span className="font-semibold not-italic">Example:</span> "I'm moving from BD1 to M14, 2 bed flat, 2nd floor, no lift, moving April 10th. I have a double bed, single wardrobe, 3 seater sofa, fridge freezer, washing machine, 5 large boxes and 3 medium boxes."

@@ -5,9 +5,9 @@ import { CheckCircle, ArrowRight } from "lucide-react";
 const benefits = [
   "Real human support (no bots)",
   "Same-day quote setup",
-  "Full month of availability",
+  "Full month of availability with prices shown",
   "£25+ discount applied",
-  "Fully insured (eligible moves)",
+  "Fully insured house move",
   "No obligation, no hidden fees",
 ];
 

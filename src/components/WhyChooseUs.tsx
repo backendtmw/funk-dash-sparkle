@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 
 const reasons = [
   "We connect you with a trusted UK-wide moving partner",
-  "You get an exclusive £25+ discount",
+  "£25+ exclusive discount with our partner Anyvan.",
   "We send a full month of availability so you can choose the cheapest date",
   "A real person handles everything for you",
 ];

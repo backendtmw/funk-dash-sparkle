@@ -6,7 +6,7 @@ const benefits = [
   "Real human support (no bots)",
   "Same-day quote setup",
   "Full month of availability with prices shown",
-  "£25+ discount applied",
+  "£25+ exclusive discount with our nationwide partner Anyvan",
   "Fully insured house move",
   "No obligation, no hidden fees",
 ];
@@ -64,7 +64,7 @@ const HeroSection = () => (
               style={{ textShadow: "1px 1px 3px hsl(var(--funky-dark-blue))" }}
             >
               Get your home move arranged by a real person — with a{" "}
-              <span className="text-funky-yellow font-bold">£25+ exclusive discount</span>, full availability options, and zero stress.
+              <span className="text-funky-yellow font-bold">£25+ exclusive discount with our nationwide partner Anyvan</span>, full availability options, and zero stress.
             </motion.p>
 
             <motion.div

@@ -25,7 +25,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 const trustPoints = [
   { icon: ShieldCheck, text: "Insured house move specialists" },
   { icon: Clock, text: "Same-day setup" },
-  { icon: CheckCircle, text: "£25+ discount" },
+  { icon: CheckCircle, text: "£25+ exclusive discount with our nationwide partner Anyvan" },
 ];
 
 const STEPS = [

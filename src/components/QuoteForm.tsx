@@ -180,6 +180,7 @@ const QuoteForm = () => {
   const [inventory, setInventory] = useState<InventoryItems>({});
   const [expandedRooms, setExpandedRooms] = useState<Record<string, boolean>>({ Bedrooms: true });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Audio state
   const [isRecording, setIsRecording] = useState(false);
@@ -236,14 +237,59 @@ const QuoteForm = () => {
     }
   };
 
-  const handleSubmit = () => {
-    if (mode === "audio") {
-      console.log("Audio quote submitted", { audioBlob, formData: { fullName: formData.fullName, email: formData.email, phone: formData.phone, consent: formData.consent } });
-    } else {
-      console.log("Form quote submitted:", { ...formData, inventory });
+ const handleSubmit = async () => {
+  try {
+    setSubmitting(true);
+
+    const payload = new FormData();
+
+    payload.append("mode", mode);
+    payload.append("fromPostcode", formData.fromPostcode);
+    payload.append("toPostcode", formData.toPostcode);
+    payload.append("propertyType", formData.propertyType);
+    payload.append("floorLevel", formData.floorLevel);
+    payload.append("liftAvailable", formData.liftAvailable);
+    payload.append("bedrooms", formData.bedrooms);
+    payload.append("moveDate", formData.moveDate);
+    payload.append("flexibleDates", formData.flexibleDates);
+    payload.append("fullName", formData.fullName);
+    payload.append("email", formData.email);
+    payload.append("phone", formData.phone);
+    payload.append("consent", formData.consent ? "Yes" : "No");
+    payload.append("otherItems", formData.otherItems || "");
+
+    const inventoryList = Object.entries(inventory)
+      .map(([item, qty]) => `${item.replace("::", " - ")}: ${qty}`)
+      .join("\n");
+
+    payload.append("inventory", inventoryList || "No items added");
+
+    if (audioBlob) {
+      payload.append("audio", audioBlob, "moving-quote-recording.webm");
     }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/api/send-quote`,
+      {
+        method: "POST",
+        body: payload,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Failed to submit quote");
+    }
+
     setSubmitted(true);
-  };
+  } catch (error) {
+    console.error("Submit error:", error);
+    alert("Something went wrong while submitting your quote. Please try again.");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   // Audio recording
   const startRecording = useCallback(async () => {
@@ -665,15 +711,16 @@ const QuoteForm = () => {
           </div>
         </div>
         <motion.button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!formData.email || !formData.phone || !formData.consent}
-          className="btn-funky w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
-        >
-          👉 Get My Discounted Moving Quotes <ArrowRight className="w-5 h-5" />
-        </motion.button>
+  type="button"
+  onClick={handleSubmit}
+  disabled={!formData.email || !formData.phone || !formData.consent || submitting}
+  className="btn-funky w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+  whileHover={!submitting ? { scale: 1.02 } : {}}
+  whileTap={!submitting ? { scale: 0.97 } : {}}
+>
+  {submitting ? "Submitting..." : "👉 Get My Discounted Moving Quotes"}
+  {!submitting && <ArrowRight className="w-5 h-5" />}
+</motion.button>
       </div>
     </div>
   );
@@ -830,15 +877,16 @@ const QuoteForm = () => {
                   </motion.button>
                 ) : (
                   <motion.button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={!canAdvance()}
-                    className="btn-funky flex items-center gap-2 text-sm !px-5 !py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                    whileHover={canAdvance() ? { scale: 1.03 } : {}}
-                    whileTap={canAdvance() ? { scale: 0.97 } : {}}
-                  >
-                    👉 Get My Discounted Moving Quotes <ArrowRight className="w-4 h-4" />
-                  </motion.button>
+  type="button"
+  onClick={handleSubmit}
+  disabled={!canAdvance() || submitting}
+  className="btn-funky flex items-center gap-2 text-sm !px-5 !py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+  whileHover={!submitting && canAdvance() ? { scale: 1.03 } : {}}
+  whileTap={!submitting && canAdvance() ? { scale: 0.97 } : {}}
+>
+  {submitting ? "Submitting..." : "👉 Get My Discounted Moving Quotes"}
+  {!submitting && <ArrowRight className="w-4 h-4" />}
+</motion.button>
                 )}
               </div>
             </>
